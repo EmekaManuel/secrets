@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Button } from './ui/button';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const NavBar = () => {
  const [isMobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -45,7 +46,7 @@ const NavBar = () => {
  return (
   <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
    <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-    <a
+    <Link
      href="https://flowbite.com/"
      className="flex items-center space-x-3 rtl:space-x-reverse"
     >
@@ -59,7 +60,7 @@ const NavBar = () => {
      <span className="self-center font-primary text-[20px] md:text-2xl font-semibold whitespace-nowrap dark:text-white">
       SECRETS OUT
      </span>
-    </a>
+    </Link>
     <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
      <Button
       onClick={() => router.push('/auth')}
@@ -103,7 +104,7 @@ const NavBar = () => {
      <ul className="flex md:h-full h-screen flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-white md:space-x-8 rtl:space-x-reverse md:bg-transparent  md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
       {navLinks.map((link, index) => (
        <li key={index}>
-        <a
+        <Link
          href={link.route}
          className={`block py-2 px-3 ${
           link.route === '/auth' && 'hidden'
@@ -114,15 +115,15 @@ const NavBar = () => {
          aria-current={link.name === 'Home' ? 'page' : undefined}
         >
          {link.name}
-        </a>
+        </Link>
        </li>
       ))}
-      <a
+      <Link
        className="md:hidden flex py-2 px-3 rounded text-gray-900 bg-transparent hover:text-blue-700 hover:bg-gray-100"
        href="/auth"
       >
        Sign In
-      </a>
+      </Link>
      </ul>
     </div>
    </div>
