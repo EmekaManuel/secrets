@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "this is just a dummy"
+echo "Write a Better Commit Messsage My Nigga"
 
 
 #!/bin/sh

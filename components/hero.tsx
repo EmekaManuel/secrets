@@ -13,6 +13,7 @@ interface Props {
 
 const HeroSection = ({ title, subtitle, btnActionText }: Props) => {
  const router = useRouter();
+
  return (
   <section className="bg-white z-2 mt-14  md:mt-20 w-full p-4 md:p-8 lg:p-12 ">
    <div className="max-w-screen-xl justify-between h-full md:flex-row  flex flex-col flex-wrap items-start  md:items-center md:justify-between md:mx-auto md:p-4">
