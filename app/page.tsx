@@ -1,9 +1,12 @@
+import NavBar from '@/components/navbar';
 import React from 'react';
-import { Button } from '@/components/ui/button';
+
 const Home = () => {
   return (
-    <div>
-      <Button>Click Me</Button>
+    <div className="bg-dark flex flex-col min-h-screen justify-between items-center px-24 py-10 ">
+      <NavBar />
+      <div>Hello world</div>
+      <div>Hello world</div>
     </div>
   );
 };
