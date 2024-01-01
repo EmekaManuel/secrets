@@ -107,7 +107,9 @@ const NavBar = () => {
          href={link.route}
          className={`block py-2 px-3 ${
           link.route === '/auth' && 'hidden'
-         } rounded text-black bg-transparent hover:text-blue-700 hover:bg-gray-100`}
+         } rounded text-black bg-transparent ${
+          pathName == link.route && 'bg-gray-100 text-blue-700'
+         } hover:text-blue-700 hover:bg-gray-100 `}
          onClick={closeMobileMenu}
          aria-current={link.name === 'Home' ? 'page' : undefined}
         >
