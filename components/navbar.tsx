@@ -2,10 +2,14 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Button } from './ui/button';
+import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const NavBar = () => {
  const [isMobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
+ const pathName = usePathname();
+ const router = useRouter();
  const toggleMobileMenu = () => {
   setMobileMenuOpen(!isMobileMenuOpen);
  };
@@ -17,7 +21,7 @@ const NavBar = () => {
  const navLinks = [
   {
    name: 'Home',
-   route: '/home',
+   route: '/',
    external: false,
   },
   {
@@ -33,7 +37,7 @@ const NavBar = () => {
 
   {
    name: 'Get Started',
-   route: '/get-started',
+   route: '/auth',
    external: false,
   },
  ];
@@ -58,11 +62,12 @@ const NavBar = () => {
     </a>
     <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
      <Button
+      onClick={() => router.push('/auth')}
       type="button"
       variant="primary"
       className="text-white focus:ring-4 hidden md:block focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
      >
-      Get started
+      Sign In
      </Button>
      <button
       type="button"
@@ -101,7 +106,7 @@ const NavBar = () => {
         <a
          href={link.route}
          className={`block py-2 px-3 ${
-          link.route === '/get-started' && 'hidden'
+          link.route === '/auth' && 'hidden'
          } rounded text-black bg-transparent hover:text-blue-700 hover:bg-gray-100`}
          onClick={closeMobileMenu}
          aria-current={link.name === 'Home' ? 'page' : undefined}
@@ -112,7 +117,7 @@ const NavBar = () => {
       ))}
       <a
        className="md:hidden flex py-2 px-3 rounded text-gray-900 bg-transparent hover:text-blue-700 hover:bg-gray-100"
-       href="/"
+       href="/auth"
       >
        Sign In
       </a>

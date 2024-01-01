@@ -1,8 +1,8 @@
+'use client';
 import Image from 'next/image';
-import React from 'react';
 
 import HeroImage from '@/public/gc3.png';
-import BackImg from '@/public/assets/bg-lines.svg';
+import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 }
 
 const HeroSection = ({ title, subtitle, btnActionText }: Props) => {
+ const router = useRouter();
  return (
   <section className="bg-white z-2 mt-14  md:mt-20 w-full p-4 md:p-8 lg:p-12 ">
    <div className="max-w-screen-xl justify-between h-full md:flex-row  flex flex-col flex-wrap items-start  md:items-center md:justify-between md:mx-auto md:p-4">
@@ -21,6 +22,7 @@ const HeroSection = ({ title, subtitle, btnActionText }: Props) => {
      </h1>
      <p className="md:text-[18px] text-[14px]">{subtitle}</p>
      <Button
+      onClick={() => router.push('/auth')}
       type="button"
       variant="primary"
       className="text-white md:w-1/2 w-full focus:ring-4  md:block focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
