@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import { NextApiRequest, NextApiResponse } from 'next';
-
 import prismadb from '@/lib/prismadb';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
