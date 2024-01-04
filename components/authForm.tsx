@@ -72,9 +72,11 @@ const SignInForm = () => {
     });
     setSuccess('Signed In Successfully');
     toast({
+     variant: 'success',
      title: 'Registration Successful',
      description: 'You have successfully registered.',
     });
+    toggleVariant();
     console.log('success', response);
     setError(null);
    } catch (error) {
@@ -90,7 +92,7 @@ const SignInForm = () => {
     });
    }
   },
-  [toast],
+  [toast, toggleVariant],
  );
 
  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
@@ -108,19 +110,6 @@ const SignInForm = () => {
   <div className="h-screen w-full flex flex-col space-y-4 p-4 md:p-8 lg:p-12">
    <HeaderTitle title="Welcome Back 👋🏽" />
 
-   <Button
-    variant="outline"
-    onClick={() => {
-     toast({
-      variant: 'destructive',
-      title: 'Uh oh! Something went wrong.',
-      description: 'There was a problem with your request.',
-      action: <ToastAction altText="Try again">Try again</ToastAction>,
-     });
-    }}
-   >
-    Show Toast
-   </Button>
    <Form {...form}>
     <form
      onSubmit={form.handleSubmit(onSubmit)}
