@@ -18,26 +18,13 @@ import * as z from 'zod';
 import HeaderTitle from './headerTitle';
 import { Checkbox } from './ui/checkbox';
 import Loader from './loader';
+import { FormSchema } from '@/lib/utils';
+import axios from 'axios';
 
-const FormSchema = z
- .object({
-  email: z.string().min(1, 'Email is required').email('Invalid email'),
-  password: z.string().min(6, 'Password must have at least 6 characters'),
-  confirmPassword: z.string().min(4).optional(),
-  terms: z.literal(true, {
-   errorMap: () => ({
-    message: 'You must accept Terms and Conditions',
-   }),
-  }),
- })
- .refine(
-  (data) =>
-   data.confirmPassword ? data.password === data.confirmPassword : true,
-  {
-   message: "Password doesn't match",
-   path: ['confirmPassword'],
-  },
- );
+interface Props {
+ email: string;
+ password: string;
+}
 
 const SignInForm = () => {
  const [variant, setVariant] = useState('login');
@@ -47,7 +34,7 @@ const SignInForm = () => {
   defaultValues: {
    email: '',
    password: '',
-   confirmPassword: '' || undefined,
+   confirmPassword: undefined,
    terms: true,
   },
  });
@@ -61,13 +48,20 @@ const SignInForm = () => {
   });
  }, []);
 
- const onSubmit = (values: z.infer<typeof FormSchema>) => {
-  return new Promise<void>((resolve) => {
-   setTimeout(() => {
-    console.log(values);
-    resolve();
-   }, 4000);
-  });
+ const registerUser = useCallback(async ({ email, password }: Props) => {
+  try {
+   await axios.post('/api/register', { email, password });
+   console.log('success', { email });
+  } catch (error) {
+   console.error('Error registering user:', error);
+  }
+ }, []);
+
+ const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+  if (variant === 'register') {
+   const { email, password } = values;
+   await registerUser({ email, password });
+  }
  };
 
  return (
@@ -116,7 +110,7 @@ const SignInForm = () => {
        )}
       />
 
-      {variant == 'register' && (
+      {variant == 'register' ? (
        <FormField
         control={form.control}
         name="confirmPassword"
@@ -135,7 +129,7 @@ const SignInForm = () => {
          </FormItem>
         )}
        />
-      )}
+      ) : null}
 
       <FormField
        control={form.control}
