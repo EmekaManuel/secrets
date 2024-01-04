@@ -23,7 +23,11 @@ const FormSchema = z
   email: z.string().min(1, 'Email is required').email('Invalid email'),
   password: z.string().min(6, 'Password must have at least 6 characters'),
   confirmPassword: z.string().min(4).optional(),
-  terms: z.boolean().default(false),
+  terms: z.literal(true, {
+   errorMap: () => ({
+    message: 'You must accept Terms and Conditions',
+   }),
+  }),
  })
  .refine(
   (data) =>
@@ -43,9 +47,12 @@ const SignInForm = () => {
    email: '',
    password: '',
    confirmPassword: undefined,
-   terms: false,
+   terms: true,
   },
  });
+
+ const isError = !form.formState.isValid;
+ const isSubmitting = form.formState.isSubmitting;
 
  const toggleVariant = useCallback(() => {
   setVariant((currentVariant) => {
@@ -98,7 +105,7 @@ const SignInForm = () => {
            {...field}
           />
          </FormControl>
-         <FormMessage />
+         {isError && <FormMessage />}
         </FormItem>
        )}
       />
@@ -118,7 +125,7 @@ const SignInForm = () => {
             {...field}
            />
           </FormControl>
-          <FormMessage />
+          {isError && <FormMessage />}
          </FormItem>
         )}
        />
@@ -142,6 +149,7 @@ const SignInForm = () => {
           <FormDescription className="text-[13px] text-muted-foreground">
            {`You agree to our Terms of Service and Privacy Policy.`}
           </FormDescription>
+          {isError && <FormMessage />}
          </div>
         </FormItem>
        )}
