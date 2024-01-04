@@ -1,8 +1,6 @@
 'use client';
 
-import * as z from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
  Form,
  FormControl,
@@ -13,47 +11,54 @@ import {
  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useCallback, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import HeaderTitle from './headerTitle';
 import { Checkbox } from './ui/checkbox';
-const FormSchema = z.object({
- email: z.string().min(1, 'Email is required').email('Invalid email'),
- password: z
-  .string()
-  .min(1, 'Password is required')
-  .min(8, 'Password must have than 8 characters'),
- confirmPassword: z
-  .string()
-  .min(1, 'Password is required')
-  .min(8, 'Password must have than 8 characters'),
- terms: z.boolean().default(false),
 
- //  confirmPassword: z
- //   .string()
- //   .min(1, 'Confirm Password is required')
- //   .min(8, 'Confirm Password must have than 8 characters'),
-});
+const FormSchema = z
+ .object({
+  email: z.string().min(1, 'Email is required').email('Invalid email'),
+  password: z.string().min(6, 'Password must have at least 6 characters'),
+  confirmPassword: z.string().min(4).optional(),
+  terms: z.boolean().default(false),
+ })
+ .refine(
+  (data) =>
+   data.confirmPassword ? data.password === data.confirmPassword : true,
+  {
+   message: "Password doesn't match",
+   path: ['confirmPassword'],
+  },
+ );
 
 const SignInForm = () => {
+ const [variant, setVariant] = useState('login');
+
  const form = useForm<z.infer<typeof FormSchema>>({
   resolver: zodResolver(FormSchema),
   defaultValues: {
    email: '',
    password: '',
-   confirmPassword: '',
-
+   confirmPassword: undefined,
    terms: false,
-   //  confirmPassword: '',
   },
  });
+
+ const toggleVariant = useCallback(() => {
+  setVariant((currentVariant) => {
+   return currentVariant === 'login' ? 'register' : 'login';
+  });
+ }, []);
 
  const onSubmit = (values: z.infer<typeof FormSchema>) => {
   console.log(values);
  };
 
  return (
-  <div className="h-screen w-full space-y-4 p-4 md:p-8 lg:p-12">
+  <div className="h-screen w-full flex flex-col space-y-4 p-4 md:p-8 lg:p-12">
    <HeaderTitle title="Welcome Back 👋🏽" />
 
    <Form {...form}>
@@ -97,30 +102,33 @@ const SignInForm = () => {
         </FormItem>
        )}
       />
-      <FormField
-       control={form.control}
-       name="confirmPassword"
-       render={({ field }) => (
-        <FormItem>
-         <FormLabel>Password</FormLabel>
-         <FormControl>
-          <Input
-           type="confirmPassword"
-           className="placeholder:font-medium bg-gray-200 placeholder:text-c-neutral-cool-gray border-none text-c-primary-marine-blue"
-           placeholder=" confirm password"
-           {...field}
-          />
-         </FormControl>
-         <FormMessage />
-        </FormItem>
-       )}
-      />
+
+      {variant == 'register' && (
+       <FormField
+        control={form.control}
+        name="confirmPassword"
+        render={({ field }) => (
+         <FormItem>
+          <FormLabel>Confirm Password</FormLabel>
+          <FormControl>
+           <Input
+            type="confirmPassword"
+            className="placeholder:font-medium bg-gray-200 placeholder:text-c-neutral-cool-gray border-none text-c-primary-marine-blue"
+            placeholder=" confirm password"
+            {...field}
+           />
+          </FormControl>
+          <FormMessage />
+         </FormItem>
+        )}
+       />
+      )}
 
       <FormField
        control={form.control}
        name="terms"
        render={({ field }) => (
-        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md">
+        <FormItem className="flex flex-row items-start space-x-3 pt-5 space-y-0 rounded-md">
          <FormControl>
           <Checkbox
            checked={field.value}
@@ -140,19 +148,19 @@ const SignInForm = () => {
       />
      </div>
      <Button variant="gray" size="normal" type="submit">
-      Register{' '}
+      {variant == 'login' ? 'Sign In' : 'Register'}
      </Button>
     </form>
 
-    <p className="text-right text-sm gap-3 text-gray-600 mt-2">
-     Already have an account?
-     <Link
+    <span className="text-right text-sm gap-3 text-gray-600 mt-2">
+     {variant == 'login' ? 'First Time Here?' : 'Already have an Account ?'}
+     <span
+      onClick={toggleVariant}
       className="text-blue-700 pl-2 capitalize text-[13px]"
-      href="/sign-up"
      >
-      Sign in
-     </Link>
-    </p>
+      {variant == 'login' ? 'create an account' : 'login here'}
+     </span>
+    </span>
    </Form>
   </div>
  );
