@@ -11,15 +11,18 @@ import {
  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { FormSchema, MyAxiosError, MyAxiosSuccess } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import { signIn } from 'next-auth/react';
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import HeaderTitle from './headerTitle';
-import { Checkbox } from './ui/checkbox';
 import Loader from './loader';
-import { FormSchema } from '@/lib/utils';
-import axios from 'axios';
+import { Checkbox } from './ui/checkbox';
+import { useToast } from './ui/use-toast';
+import { ToastAction } from './ui/toast';
 
 interface Props {
  email: string;
@@ -28,6 +31,8 @@ interface Props {
 
 const SignInForm = () => {
  const [variant, setVariant] = useState('login');
+ const [error, setError] = useState<string | null>(null);
+ const [success, setSuccess] = useState<string | null>(null);
 
  const form = useForm<z.infer<typeof FormSchema>>({
   resolver: zodResolver(FormSchema),
@@ -39,8 +44,10 @@ const SignInForm = () => {
   },
  });
 
+ const { toast } = useToast();
  const isError = !form.formState.isValid;
  const isSubmitting = form.formState.isSubmitting;
+ const isSuccess = form.formState.isSubmitted;
 
  const toggleVariant = useCallback(() => {
   setVariant((currentVariant) => {
@@ -48,19 +55,52 @@ const SignInForm = () => {
   });
  }, []);
 
- const registerUser = useCallback(async ({ email, password }: Props) => {
+ const loginUser = useCallback(async ({ email, password }: Props) => {
   try {
-   await axios.post('/api/register', { email, password });
-   console.log('success', { email });
+   await signIn('credentials', { email, password, callbackUrl: '/' });
   } catch (error) {
-   console.error('Error registering user:', error);
+   console.log(error);
   }
  }, []);
+
+ const registerUser = useCallback(
+  async ({ email, password }: Props) => {
+   try {
+    const response = await axios.post<MyAxiosSuccess>('/api/register', {
+     email,
+     password,
+    });
+    setSuccess('Signed In Successfully');
+    toast({
+     title: 'Registration Successful',
+     description: 'You have successfully registered.',
+    });
+    console.log('success', response);
+    setError(null);
+   } catch (error) {
+    const myError = error as MyAxiosError;
+    const errorMessage =
+     myError?.response?.data || 'An error occurred during registration';
+
+    setError(errorMessage);
+    toast({
+     variant: 'destructive',
+     title: 'Registration Failed',
+     description: errorMessage,
+    });
+   }
+  },
+  [toast],
+ );
 
  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
   if (variant === 'register') {
    const { email, password } = values;
    await registerUser({ email, password });
+  }
+  if (variant === 'login') {
+   const { email, password } = values;
+   await loginUser({ email, password });
   }
  };
 
@@ -68,6 +108,19 @@ const SignInForm = () => {
   <div className="h-screen w-full flex flex-col space-y-4 p-4 md:p-8 lg:p-12">
    <HeaderTitle title="Welcome Back 👋🏽" />
 
+   <Button
+    variant="outline"
+    onClick={() => {
+     toast({
+      variant: 'destructive',
+      title: 'Uh oh! Something went wrong.',
+      description: 'There was a problem with your request.',
+      action: <ToastAction altText="Try again">Try again</ToastAction>,
+     });
+    }}
+   >
+    Show Toast
+   </Button>
    <Form {...form}>
     <form
      onSubmit={form.handleSubmit(onSubmit)}
