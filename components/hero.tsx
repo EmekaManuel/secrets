@@ -15,7 +15,7 @@ const HeroSection = ({ title, subtitle, btnActionText }: Props) => {
  const router = useRouter();
 
  return (
-  <section className="bg-white z-2 mt-14  md:mt-20 w-full p-4 md:p-8 lg:p-12 ">
+  <section className="bg-white z-2 mt-14  md:mt-14 w-full p-4 md:p-8 lg:p-12 ">
    <div className="max-w-screen-xl justify-between h-full md:flex-row  flex flex-col flex-wrap items-start  md:items-center md:justify-between md:mx-auto md:p-4">
     <div className="md:w-1/2 w-full max-w-screen gap-7 flex flex-col break-normal ">
      <h1 className="md:text-5xl text-2xl md:text-left  text-center w-full lowercase font-bold md:font-mono font-mono text-wrap tracking-wider leading-tight ">

@@ -3,7 +3,7 @@ import NavBar from '@/components/navbar';
 const Home = () => {
  return (
   <>
-   <div className="bg-white flex flex-col min-h-screen justify-between py-10 ">
+   <div className="bg-white flex flex-col min-h-screen justify-between ">
     <NavBar />
     <HeroSection
      title="Share Confidential Messages with Ease
