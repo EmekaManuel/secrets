@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import HeaderTitle from './headerTitle';
 import { Checkbox } from './ui/checkbox';
+import Loader from './loader';
 
 const FormSchema = z
  .object({
@@ -46,7 +47,7 @@ const SignInForm = () => {
   defaultValues: {
    email: '',
    password: '',
-   confirmPassword: undefined,
+   confirmPassword: '' || undefined,
    terms: true,
   },
  });
@@ -61,7 +62,12 @@ const SignInForm = () => {
  }, []);
 
  const onSubmit = (values: z.infer<typeof FormSchema>) => {
-  console.log(values);
+  return new Promise<void>((resolve) => {
+   setTimeout(() => {
+    console.log(values);
+    resolve();
+   }, 4000);
+  });
  };
 
  return (
@@ -119,7 +125,7 @@ const SignInForm = () => {
           <FormLabel>Confirm Password</FormLabel>
           <FormControl>
            <Input
-            type="confirmPassword"
+            type="password"
             className="placeholder:font-medium bg-gray-200 placeholder:text-c-neutral-cool-gray border-none text-c-primary-marine-blue"
             placeholder=" confirm password"
             {...field}
@@ -155,8 +161,17 @@ const SignInForm = () => {
        )}
       />
      </div>
-     <Button variant="gray" size="normal" type="submit">
-      {variant == 'login' ? 'Sign In' : 'Register'}
+     <Button disabled={isSubmitting} variant="gray" size="normal" type="submit">
+      {isSubmitting ? (
+       <Loader
+        title={variant === 'login' ? 'Logging In' : 'Creating Your Account'}
+        color="bg-transparent"
+       />
+      ) : variant == 'login' ? (
+       'Sign In'
+      ) : (
+       'Register'
+      )}
      </Button>
     </form>
 
