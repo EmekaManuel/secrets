@@ -31,8 +31,6 @@ interface Props {
 
 const SignInForm = () => {
  const [variant, setVariant] = useState('login');
- const [error, setError] = useState<string | null>(null);
- const [success, setSuccess] = useState<string | null>(null);
 
  const form = useForm<z.infer<typeof FormSchema>>({
   resolver: zodResolver(FormSchema),
@@ -70,7 +68,6 @@ const SignInForm = () => {
      email,
      password,
     });
-    setSuccess('Signed In Successfully');
     toast({
      variant: 'success',
      title: 'Registration Successful',
@@ -78,13 +75,11 @@ const SignInForm = () => {
     });
     toggleVariant();
     console.log('success', response);
-    setError(null);
    } catch (error) {
     const myError = error as MyAxiosError;
     const errorMessage =
      myError?.response?.data || 'An error occurred during registration';
 
-    setError(errorMessage);
     toast({
      variant: 'destructive',
      title: 'Registration Failed',
