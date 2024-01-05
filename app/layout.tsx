@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { useState, useEffect } from 'react';
+import { Provider } from './provider';
 import './globals.css';
 
 import { Toaster } from '@/components/ui/toaster';
@@ -21,8 +21,10 @@ export default function RootLayout({
  return (
   <html lang="en">
    <body className={inter.className}>
-    <main> {children}</main>
-    <Toaster />
+    <Provider>
+     <main> {children}</main>
+     <Toaster />
+    </Provider>
    </body>
   </html>
  );

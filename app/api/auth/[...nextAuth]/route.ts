@@ -1,49 +1,52 @@
-import NextAuth, { AuthOptions } from 'next-auth';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import bcrypt, { compare } from 'bcryptjs';
-
-import prismadb from '@/lib/prismadb';
+import NextAuth, { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-
-export const authOptions: AuthOptions = {
- adapter: PrismaAdapter(prismadb),
+import prismadb from '@/lib/prismadb';
+import { compare } from 'bcrypt';
+export const authOptions: NextAuthOptions = {
+ session: {
+  strategy: 'jwt',
+ },
  providers: [
   CredentialsProvider({
-   name: 'Credentials',
+   name: 'sign in',
    credentials: {
-    email: { label: 'Email', type: 'text', placeholder: 'Email' },
-    password: { label: 'Password', type: 'password' },
+    email: { label: 'Email', type: 'email', placeholder: 'manuel@gmail.com' },
+    password: {
+     label: 'Password',
+     type: 'password',
+    },
    },
-   async authorize(credentials, req) {
-    if (!credentials?.email || !credentials?.password) {
-     throw new Error('Email and Password Required');
+   async authorize(credentials) {
+    if (!credentials?.email || credentials?.password) {
+     return null;
     }
 
     const user = await prismadb.user.findUnique({
-     where: { email: credentials.email },
+     where: {
+      email: credentials.email,
+     },
     });
 
-    if (!user || !user.hashedPassword) {
-     throw new Error("Email doesn't exist");
+    if (!user) {
+     return null;
     }
+    if (!user || !user.hashedPassword) {
+     throw new Error("User doesn't exist");
+    }
+
     const isCorrectPassword = await compare(
      credentials.password,
      user.hashedPassword,
     );
 
-    if (!isCorrectPassword) {
-     throw new Error('Incorrect Password');
-    }
-
+    if (!isCorrectPassword) return null;
     return user;
    },
+
+   // end of auhorize
   }),
  ],
- session: {
-  strategy: 'jwt',
- },
- secret: process.env.NEXTAUTH_SECRET,
- debug: process.env.NODE_ENV === 'development',
 };
 
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
