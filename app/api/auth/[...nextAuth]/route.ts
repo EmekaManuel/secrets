@@ -1,49 +1,83 @@
-import NextAuth, { AuthOptions } from 'next-auth';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import bcrypt, { compare } from 'bcryptjs';
-
-import prismadb from '@/lib/prismadb';
+import NextAuth, { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-
-export const authOptions: AuthOptions = {
- adapter: PrismaAdapter(prismadb),
- providers: [
-  CredentialsProvider({
-   name: 'Credentials',
-   credentials: {
-    email: { label: 'Email', type: 'text', placeholder: 'Email' },
-    password: { label: 'Password', type: 'password' },
-   },
-   async authorize(credentials, req) {
-    if (!credentials?.email || !credentials?.password) {
-     throw new Error('Email and Password Required');
-    }
-
-    const user = await prismadb.user.findUnique({
-     where: { email: credentials.email },
-    });
-
-    if (!user || !user.hashedPassword) {
-     throw new Error("Email doesn't exist");
-    }
-    const isCorrectPassword = await compare(
-     credentials.password,
-     user.hashedPassword,
-    );
-
-    if (!isCorrectPassword) {
-     throw new Error('Incorrect Password');
-    }
-
-    return user;
-   },
-  }),
- ],
+import { compare } from 'bcrypt';
+import { prisma } from '@/lib/prisma';
+export const authOptions: NextAuthOptions = {
  session: {
   strategy: 'jwt',
  },
- secret: process.env.NEXTAUTH_SECRET,
- debug: process.env.NODE_ENV === 'development',
+ providers: [
+  CredentialsProvider({
+   name: 'Sign in',
+   credentials: {
+    email: {
+     label: 'Email',
+     type: 'email',
+     placeholder: 'hello@example.com',
+    },
+    password: { label: 'Password', type: 'password' },
+   },
+
+   async authorize(credentials) {
+    if (!credentials?.email || !credentials.password) {
+     return null;
+    }
+
+    const user = await prisma.user.findUnique({
+     where: {
+      email: credentials.email,
+     },
+    });
+
+    if (!user) {
+     return null;
+    }
+
+    if (!user || !user.password) {
+     throw new Error("User doesn't exist");
+    }
+
+    const isPasswordValid = await compare(credentials.password, user.password);
+
+    if (!isPasswordValid) {
+     return null;
+    }
+
+    return {
+     id: user.id + '',
+     email: user.email,
+     randomKey: 'Hey cool',
+    };
+   },
+  }),
+ ],
+
+ callbacks: {
+  session: ({ session, token }) => {
+   console.log('Session Callback', { session, token });
+   return {
+    ...session,
+    user: {
+     ...session.user,
+     id: token.id,
+     randomKey: token.randomKey,
+    },
+   };
+  },
+  jwt: ({ token, user }) => {
+   console.log('JWT Callback', { token, user });
+   if (user) {
+    const u = user as unknown as any;
+    return {
+     ...token,
+     id: u.id,
+     randomKey: u.randomKey,
+    };
+   }
+   return token;
+  },
+ },
 };
 
-export default NextAuth(authOptions);
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

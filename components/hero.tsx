@@ -4,6 +4,7 @@ import Image from 'next/image';
 import HeroImage from '@/public/gc3.png';
 import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
+import Link from 'next/link';
 
 interface Props {
  title: string;
@@ -22,14 +23,15 @@ const HeroSection = ({ title, subtitle, btnActionText }: Props) => {
       {title}
      </h1>
      <p className="md:text-[18px] text-[14px]">{subtitle}</p>
-     <Button
-      onClick={() => router.push('/auth')}
-      type="button"
-      variant="primary"
-      className="text-white md:w-1/2 w-full focus:ring-4  md:block focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-     >
-      Get started
-     </Button>
+     <Link href="/auth">
+      <Button
+       type="button"
+       variant="primary"
+       className="text-white md:w-1/2 w-full focus:ring-4  md:block focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+       Get started
+      </Button>
+     </Link>
     </div>
     <Image
      src={HeroImage}

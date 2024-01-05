@@ -1,3 +1,4 @@
+import { AxiosError, AxiosResponse } from 'axios';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import * as z from 'zod';
@@ -25,3 +26,12 @@ export const FormSchema = z
    path: ['confirmPassword'],
   },
  );
+
+// Define the interface extending AxiosError
+export interface MyAxiosError<T = any> extends AxiosError {
+ response?: AxiosResponse<T> | undefined;
+}
+
+export interface MyAxiosSuccess<T = any> extends AxiosResponse {
+ data: T;
+}

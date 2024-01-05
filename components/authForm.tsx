@@ -11,15 +11,18 @@ import {
  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { FormSchema, MyAxiosError, MyAxiosSuccess } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import { signIn } from 'next-auth/react';
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import HeaderTitle from './headerTitle';
-import { Checkbox } from './ui/checkbox';
 import Loader from './loader';
-import { FormSchema } from '@/lib/utils';
-import axios from 'axios';
+import { Checkbox } from './ui/checkbox';
+import { useToast } from './ui/use-toast';
+import { redirect } from 'next/navigation';
 
 interface Props {
  email: string;
@@ -39,6 +42,7 @@ const SignInForm = () => {
   },
  });
 
+ const { toast } = useToast();
  const isError = !form.formState.isValid;
  const isSubmitting = form.formState.isSubmitting;
 
@@ -48,19 +52,51 @@ const SignInForm = () => {
   });
  }, []);
 
- const registerUser = useCallback(async ({ email, password }: Props) => {
+ const loginUser = useCallback(async ({ email, password }: Props) => {
   try {
-   await axios.post('/api/register', { email, password });
-   console.log('success', { email });
+   await signIn('credentials', { email, password, callbackUrl: '/dashboard' });
   } catch (error) {
-   console.error('Error registering user:', error);
+   console.log(error);
   }
  }, []);
+
+ const registerUser = useCallback(
+  async ({ email, password }: Props) => {
+   try {
+    const response = await axios.post<MyAxiosSuccess>('/api/register', {
+     email,
+     password,
+    });
+    toast({
+     variant: 'success',
+     title: 'Registration Successful',
+     description: 'You have successfully registered.',
+    });
+    toggleVariant();
+    console.log('success', response);
+   } catch (error) {
+    const myError = error as MyAxiosError;
+    const errorMessage =
+     myError?.response?.data || 'An error occurred during registration';
+
+    toast({
+     variant: 'destructive',
+     title: 'Registration Failed',
+     description: errorMessage,
+    });
+   }
+  },
+  [toast, toggleVariant],
+ );
 
  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
   if (variant === 'register') {
    const { email, password } = values;
    await registerUser({ email, password });
+  }
+  if (variant === 'login') {
+   const { email, password } = values;
+   await loginUser({ email, password });
   }
  };
 
