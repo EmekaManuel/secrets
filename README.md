@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# React-Native-Intern-Assessment
+
+## Introduction
+
+This is a React Native weather app that allows users to search for locations and view their weather details. The app utilizes WeatherAPI for fetching weather data and Redux-Toolkit for state management. This application was written completely in typescript.
+
+## Prerequisites
+
+Make sure you have the following installed before running the project:
+
+- Node.js
+- npm or yarn
+- Expo CLI
+- API Key from https://www.weatherapi.com/
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone the repository:**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+   ```bash
+   git clone https://github.com/EmekaManuel/secrets.git
+   ```
+  
+2. **Install Dependencies & Run the Application:**
+   ```bash
+   npm install
+   or
+   yarn install
+   ```
+   
+## Folder Structure - Next13 app-router
+   ```bash
+   /app: Contains the source code of the project.
+      /api: Contains all api logic.
+      /auth: Reusable React components.
+      /dashboard: User Dashboard.
+   /components: contains reusable components
+   /lib: contains utility functions
+   /prisma: contains prisma ORM config
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Additional Notes
+   ```bash
+   - The app uses Prisma as ORM and MongoDB as database.
+   - The app uses NextAuth credentialProvider for authentication.
+   - The styling is handled using shadcn-UI and tailwind.   
+   - Redux is employed for state management, allowing efficient data flow between components.
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Possible Improvements
+```bash
+- Send images alongside messages
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Feel free to contribute, report issues, or suggest improvements!
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
