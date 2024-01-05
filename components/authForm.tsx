@@ -22,7 +22,7 @@ import HeaderTitle from './headerTitle';
 import Loader from './loader';
 import { Checkbox } from './ui/checkbox';
 import { useToast } from './ui/use-toast';
-import { ToastAction } from './ui/toast';
+import { redirect } from 'next/navigation';
 
 interface Props {
  email: string;
@@ -45,7 +45,6 @@ const SignInForm = () => {
  const { toast } = useToast();
  const isError = !form.formState.isValid;
  const isSubmitting = form.formState.isSubmitting;
- const isSuccess = form.formState.isSubmitted;
 
  const toggleVariant = useCallback(() => {
   setVariant((currentVariant) => {
@@ -55,7 +54,7 @@ const SignInForm = () => {
 
  const loginUser = useCallback(async ({ email, password }: Props) => {
   try {
-   await signIn('credentials', { email, password, callbackUrl: '/' });
+   await signIn('credentials', { email, password, callbackUrl: '/dashboard' });
   } catch (error) {
    console.log(error);
   }

@@ -1,13 +1,8 @@
-'use client';
-
 import AuthForm from '@/components/authForm';
-import { Button } from '@/components/ui/button';
 import HeroImage from '@/public/assets/Celebration - 1500x1398.png';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 const Page = () => {
- const router = useRouter();
  return (
   <section className="bg-gray-200  z-2 h-screen w-full p-4 md:p-8 lg:p-20 ">
    <div className="max-w-screen bg-white rounded-lg justify-between h-full md:flex-row flex flex-col flex-wrap items-start  md:items-center md:justify-between md:mx-auto md:p-4">

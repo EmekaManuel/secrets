@@ -1,16 +1,13 @@
 'use client';
-import React, { useState } from 'react';
-import Image from 'next/image';
-import { Button } from './ui/button';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import { Button } from './ui/button';
 
 const NavBar = () => {
  const [isMobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
  const pathName = usePathname();
- const router = useRouter();
  const toggleMobileMenu = () => {
   setMobileMenuOpen(!isMobileMenuOpen);
  };
@@ -50,26 +47,20 @@ const NavBar = () => {
      href="https://flowbite.com/"
      className="flex items-center space-x-3 rtl:space-x-reverse"
     >
-     {/* <Image
-      width={10}
-      height={10}
-      src="https://flowbite.com/docs/images/logo.svg"
-      className="h-8 w-8"
-      alt="Flowbite Logo"
-     /> */}
      <span className="self-center font-primary text-[20px] md:text-2xl font-semibold whitespace-nowrap dark:text-white">
       SECRETS OUT
      </span>
     </Link>
     <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-     <Button
-      onClick={() => router.push('/auth')}
-      type="button"
-      variant="primary"
-      className="text-white focus:ring-4 hidden md:block focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-     >
-      Sign In
-     </Button>
+     <Link href="/auth">
+      <Button
+       type="button"
+       variant="primary"
+       className="text-white focus:ring-4 hidden md:block focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+       Sign In
+      </Button>
+     </Link>
      <button
       type="button"
       className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"

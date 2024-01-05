@@ -12,7 +12,7 @@ export async function POST(req: NextApiRequest) {
   if (!email || !password) {
    return new NextResponse('Missing Email or Password', { status: 400 });
   }
-  const existingUser = await prismadb.user.findUnique({
+  const existingUser = await prisma.user.findUnique({
    where: {
     email,
    },
