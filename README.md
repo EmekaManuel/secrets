@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a React Native weather app that allows users to search for locations and view their weather details. The app utilizes WeatherAPI for fetching weather data and Redux-Toolkit for state management. This application was written completely in typescript.
+Secrets is a NextJs application which enables users to send and receive massages / feedback anonymously. This application was written completely in typescript / NextJs.
 
 ## Prerequisites
 
@@ -10,8 +10,7 @@ Make sure you have the following installed before running the project:
 
 - Node.js
 - npm or yarn
-- Expo CLI
-- API Key from https://www.weatherapi.com/
+- MongoDb URI from https://www.mongodb.com/
 
 ## Getting Started
 
